@@ -28,13 +28,19 @@ class PrototypesController < ApplicationController
   def edit
     @prototype = Prototype.find(params[:id])
 
+    if current_user == @prototype.user
+      render :edit
+    else
+      redirect_to root_path
+    end
+
   end
 
   def update
-    prototype = Prototype.find(params[:id])    #なんでここでは「＠」はないのか。また、なんでここでもparams？？
-    prototype.update(prototype_params)   #ここでの「.update」は何？アクティブレコード？
+    @prototype = Prototype.find(params[:id])    #なんでここでは「＠」はないのか。また、なんでここでもparams？？「@を置かないといけない理由は？インスタンス変数とは、何か再度確認。」
+       #ここでの「.update」は何？アクティブレコード？
 
-    if prototype.save  #ここのsaveもアクティブレコード？  #「＠」をつけない理由は「create」と区別をつけるため？？ #ビューファイルでifを設定しない代わりにコントローラーで変数化させずにコントローラーとは別物とするように更新(保存)にしている？？
+    if @prototype.update(prototype_params)  #ここのsaveもアクティブレコード？  #「＠」をつけない理由は「create」と区別をつけるため？？ #ビューファイルでifを設定しない代わりにコントローラーで変数化させずにコントローラーとは別物とするように更新(保存)にしている？？ #（追記）おそらくsaveではない！if分の前にupdateを置いてしまうと、「もしupdateができたら・・という構文にはならない！」
       redirect_to prototype_path
     else
       render :edit
